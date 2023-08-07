@@ -1,0 +1,18 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+
+rules:
+    - CuyZ\ValinorBundle\Tests\QA\ApiAndInternalAnnotationCheck
+
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+    symfony:
+        containerXmlPath: var/cache/test/default/CuyZ_ValinorBundle_Tests_App_AppKernelTestDebugContainer.xml
+    scanDirectories:
+        - vendor/symfony/dependency-injection/Loader/Configurator
+    tmpDir: var/cache/phpstan

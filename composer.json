@@ -1,0 +1,69 @@
+{
+    "name": "cuyz/valinor-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony integration of `cuyz/valinor` — a library that helps to map any input into a strongly-typed value object structure.",
+    "homepage": "https://github.com/CuyZ/Valinor-Bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Romain Canon",
+            "email": "romain.hydrocanon@gmail.com",
+            "homepage": "https://github.com/romm"
+        }
+    ],
+    "require": {
+        "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
+        "cuyz/valinor": "^1.0",
+        "symfony/config": "^5.4 || ^6.3",
+        "symfony/dependency-injection": "^5.4 || ^6.3",
+        "symfony/http-kernel": "^5.4 || ^6.3"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.21",
+        "infection/infection": "^0.27.0",
+        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan-strict-rules": "^1.5",
+        "phpstan/phpstan-symfony": "^1.3",
+        "phpstan/phpstan-phpunit": "^1.3",
+        "phpunit/phpunit": "^10.2",
+        "symfony/console": "^5.4 || ^6.3",
+        "symfony/framework-bundle": "^5.4 || ^6.3",
+        "symfony/runtime": "^5.4 || ^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "CuyZ\\ValinorBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CuyZ\\ValinorBundle\\Tests\\": "tests",
+            "CuyZ\\ValinorBundle\\Tests\\App\\": "tests/App/src"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@putenv XDEBUG_MODE=off",
+            "phpunit",
+            "phpstan",
+            "php-cs-fixer fix --dry-run",
+            "@check-todo"
+        ],
+        "check-todo": [
+            "! git --no-pager grep --extended-regexp --ignore-case 'todo|fixme' -- ':!composer.json' ':!*/quality-assurance.yml'"
+        ],
+        "fix": [
+            "@putenv XDEBUG_MODE=off",
+            "php-cs-fixer fix"
+        ],
+        "mutation": [
+            "infection --threads=max --git-diff-lines"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true,
+            "infection/extension-installer": true
+        }
+    }
+}

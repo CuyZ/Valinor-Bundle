@@ -1,0 +1,5 @@
+.idea
+var
+vendor
+phpstan.neon
+.phpunit.result.cache
