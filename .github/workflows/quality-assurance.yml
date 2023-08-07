@@ -1,0 +1,50 @@
+name: Coding Standards & Static Analysis
+on: [push, pull_request]
+jobs:
+  qa:
+    name: Quality Assurance
+    runs-on: ubuntu-latest
+    env:
+      php-version: '8.2'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php-version }}
+          coverage: none # Xdebug is installed by default, so we remove it manually
+
+      - name: Creating var directory
+        run: mkdir -p var/cache
+
+      - name: Cache QA results
+        uses: actions/cache@v3.2.5
+        with:
+          path: var/cache
+          key: qa-${{ hashFiles('composer.lock') }}-${{ hashFiles('.github/workflows/quality-assurance.yml') }}
+          restore-keys: qa-${{ hashFiles('composer.lock') }}-${{ hashFiles('.github/workflows/quality-assurance.yml') }}
+
+      - name: Checking Composer
+        run: composer validate --strict
+
+      - uses: "ramsey/composer-install@v2"
+
+      - name: Checking for forgotten TODO
+        run: composer check-todo
+
+      - name: Warming up cache
+        run: php tests/App/bin/console cache:warmup --env=test
+
+      - name: TODO TMP
+        run: |
+          pwd
+          ls -al var/cache/test
+          ls -al var/cache/test/default
+
+      - name: Running PHPStan
+        run: php vendor/bin/phpstan
+
+      - name: Running PHP Coding Standards Fixer
+        run: php vendor/bin/php-cs-fixer fix --dry-run

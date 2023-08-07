@@ -1,0 +1,20 @@
+{
+    "timeout": 5,
+    "bootstrap": "tests/infection-bootstrap.php",
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "tmpDir": "var/cache/infection",
+    "logs": {
+        "text": "var/infection/infection.log",
+        "summary": "var/infection/summary.log",
+        "perMutator": "var/infection/per-mutator.md",
+        "html": "var/infection/infection.html",
+        "stryker": {
+            "report": "master"
+        }
+    },
+    "$schema": "vendor/infection/infection/resources/schema.json"
+}

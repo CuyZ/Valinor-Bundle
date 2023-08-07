@@ -1,0 +1,13 @@
+*.php text eol=lf
+
+/.github/ export-ignore
+/docs/ export-ignore
+/tests/ export-ignore
+
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/composer.lock export-ignore
+/infection.json.dist export-ignore
+/phpstan.neon.dist export-ignore
+/phpunit.xml.dist export-ignore

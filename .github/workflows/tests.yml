@@ -1,0 +1,33 @@
+name: Tests
+on: [push, pull_request]
+jobs:
+  tests:
+    name: PHP ${{ matrix.php-version }} / ${{ matrix.dependencies }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        dependencies:
+          - "lowest"
+          - "highest"
+          - "locked"
+        php-version:
+          - "8.1"
+          - "8.2"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none # Xdebug is installed by default, so we remove it manually
+
+      - uses: "ramsey/composer-install@v2"
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - name: Running tests
+        run: php vendor/bin/phpunit
