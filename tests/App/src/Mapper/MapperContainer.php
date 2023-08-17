@@ -10,9 +10,7 @@ use CuyZ\ValinorBundle\Configurator\Attributes\AllowSuperfluousKeys;
 use CuyZ\ValinorBundle\Configurator\Attributes\EnableFlexibleCasting;
 use CuyZ\ValinorBundle\Configurator\Attributes\SupportDateFormats;
 use CuyZ\ValinorBundle\Tests\App\Configurator\DateConfiguratorAttribute;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(public: true)]
 final class MapperContainer
 {
     public function __construct(

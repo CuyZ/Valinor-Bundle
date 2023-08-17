@@ -42,6 +42,6 @@ abstract class IntegrationTestCase extends KernelTestCase
 
     protected function mapperContainer(): MapperContainer
     {
-        return self::getContainer()->get(MapperContainer::class);
+        return self::getContainer()->get('app.mapper_container');
     }
 }
