@@ -331,7 +331,7 @@ the mapper cache will be warmed up automatically for all classes that are tagged
 with the tag `valinor.warmup`.
 
 This tag can be added manually via service configuration, or automatically for
-autowired class using the attribute `\CuyZ\ValinorBundle\Cache\WarmupForMapper`.
+**autoconfigured classes** using the attribute `WarmupForMapper`.
 
 ```php
 #[\CuyZ\ValinorBundle\Cache\WarmupForMapper]
