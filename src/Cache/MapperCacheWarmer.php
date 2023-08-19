@@ -19,6 +19,8 @@ final class MapperCacheWarmer implements CacheWarmerInterface
 
     public function warmUp(string $cacheDir): array
     {
+        $this->mapperBuilder->warmup();
+
         foreach ($this->classesToWarmup->getProvidedServices() as $class) {
             $this->mapperBuilder->warmup($class);
         }
