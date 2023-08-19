@@ -344,5 +344,12 @@ final readonly class ClassThatWillBeWarmedUp
 }
 ```
 
+> [!NOTE]
+> The `WarmupForMapper` attribute disables dependency injection autowiring for
+> the class it is assigned to. Although autowiring a class that will be
+> instantiated by a mapper makes little sense in most cases, it may still be
+> needed, in which case the `$autowire` parameter of the attribute can be set to
+> `true`.
+
 [Valinor library]: https://github.com/CuyZ/Valinor
 [link-packagist]: https://packagist.org/packages/cuyz/valinor-bundle
