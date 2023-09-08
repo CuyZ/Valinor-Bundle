@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.2.1](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.0...0.2.1) (2023-09-08)
+
+### Bug Fixes
+
+* Disable injection autowiring for `WarmupForMapper` attribute ([c5a984](https://github.com/CuyZ/Valinor-Bundle/commit/c5a98407b85289b2883edd97e49d8cd869bb2922))
+
+---
+
 ## [0.2.0](https://github.com/CuyZ/Valinor-Bundle/compare/0.1.0...v0.2.0) (2023-08-25)
 
 ### Features
