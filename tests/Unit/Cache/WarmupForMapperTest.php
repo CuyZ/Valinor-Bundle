@@ -15,7 +15,7 @@ final class WarmupForMapperTest extends TestCase
         $attributeWithAutowiring = new WarmupForMapper(true);
         $attributeWithoutAutowiring = new WarmupForMapper(false);
 
-        self::assertTrue($attributeWithoutArgument->autowire);
+        self::assertFalse($attributeWithoutArgument->autowire);
         self::assertTrue($attributeWithAutowiring->autowire);
         self::assertFalse($attributeWithoutAutowiring->autowire);
     }
