@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class WarmupForMapper extends Autoconfigure
 {
-    public function __construct(bool $autowire = true)
+    public function __construct(bool $autowire = false)
     {
         parent::__construct(tags: ['valinor.warmup'], autowire: $autowire);
     }
