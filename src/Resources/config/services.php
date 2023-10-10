@@ -62,7 +62,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
             ->args([
                 '%kernel.cache_dir%/Valinor',
                 in_array(
-                    $container->env(),
+                    $builder->getParameter('kernel.environment'),
                     array_map('trim', $config['cache']['env_where_files_are_watched']),
                     true
                 )
