@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.2.2](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.1...0.2.2) (2023-10-11)
+
+### Bug Fixes
+
+* Correctly fetch Kernel environment in services configuration ([882778](https://github.com/romm/Valinor-Bundle/commit/882778f3c5d376925794e3e717787daaa0e95872))
+
+---
+
 ## [0.2.1](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.0...0.2.1) (2023-09-08)
 
 ### Bug Fixes
