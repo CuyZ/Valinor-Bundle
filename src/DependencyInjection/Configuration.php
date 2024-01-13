@@ -69,7 +69,7 @@ final class Configuration implements ConfigurationInterface
                             'outdated class definitions to cause invalid mapping behaviour.'
                         )
                         ->scalarPrototype()->end()
-                        ->defaultValue(['dev'])
+                        ->defaultValue(['dev', 'test'])
                     ->end()
                 ->end()
             ->end()
