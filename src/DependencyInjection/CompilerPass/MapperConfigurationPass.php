@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CuyZ\ValinorBundle\DependencyInjection\CompilerPass;
 
 use CuyZ\Valinor\Mapper\TreeMapper;
+use CuyZ\Valinor\MapperBuilder;
 use CuyZ\ValinorBundle\Configurator\Attributes\MapperBuilderConfiguratorAttribute;
 use CuyZ\ValinorBundle\Configurator\AttributesConfigurator;
 use CuyZ\ValinorBundle\DependencyInjection\Factory\MapperBuilderFactory;
@@ -52,14 +53,14 @@ final class MapperConfigurationPass extends AbstractRecursivePass
                 $attributes
             );
 
-            $mapperBuilder = (new Definition())
+            $mapperBuilder = (new Definition(MapperBuilder::class))
                 ->setFactory([
                     (new Definition(MapperBuilderFactory::class, [tagged_iterator('valinor.mapper_builder_configurator')])),
                     'create'
                 ])
                 ->setArguments([new Definition(AttributesConfigurator::class, [$instances])]);
 
-            $mapper = (new Definition())->setFactory([$mapperBuilder, 'mapper']);
+            $mapper = (new Definition(TreeMapper::class))->setFactory([$mapperBuilder, 'mapper']);
 
             $value->setArgument('$' . $parameter->name, $mapper);
         }
