@@ -11,22 +11,12 @@ use Symfony\Contracts\Service\ServiceProviderInterface;
 /** @internal */
 final class MapperCacheWarmer implements CacheWarmerInterface
 {
+    use WarmUpCompatibility;
+
     public function __construct(
-        /** @var ServiceProviderInterface<object> */
         private ServiceProviderInterface $classesToWarmup,
         private MapperBuilder $mapperBuilder
     ) {}
-
-    public function warmUp(string $cacheDir): array
-    {
-        $this->mapperBuilder->warmup();
-
-        foreach ($this->classesToWarmup->getProvidedServices() as $class) {
-            $this->mapperBuilder->warmup($class);
-        }
-
-        return [];
-    }
 
     public function isOptional(): bool
     {
