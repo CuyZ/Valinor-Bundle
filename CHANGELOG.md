@@ -4,11 +4,23 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.2.3](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.2...0.2.3) (2024-01-13)
+
+### Bug Fixes
+
+* Set class name in compiler pass definition ([3ef094](https://github.com/CuyZ/Valinor-Bundle/commit/3ef094a975d540b9a038a17a1811a08827c2ad75))
+
+### Other
+
+* Watch files in test environment by default ([2abfbb](https://github.com/CuyZ/Valinor-Bundle/commit/2abfbb0c9c269b3e630c3f217edb89e2ff48b8a3))
+
+---
+
 ## [0.2.2](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.1...0.2.2) (2023-10-11)
 
 ### Bug Fixes
 
-* Correctly fetch Kernel environment in services configuration ([882778](https://github.com/romm/Valinor-Bundle/commit/882778f3c5d376925794e3e717787daaa0e95872))
+* Correctly fetch Kernel environment in services configuration ([882778](https://github.com/CuyZ/Valinor-Bundle/commit/882778f3c5d376925794e3e717787daaa0e95872))
 
 ---
 
