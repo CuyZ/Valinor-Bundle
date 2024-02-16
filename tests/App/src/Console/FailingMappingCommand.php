@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace CuyZ\ValinorBundle\Tests\App\Console;
 
 use CuyZ\Valinor\Mapper\TreeMapper;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand('test:command-with-failing-mapping')]
 final class FailingMappingCommand extends Command
 {
-    protected static $defaultName = 'test:command-with-failing-mapping';
-
     public function __construct(private TreeMapper $mapper)
     {
         parent::__construct();
