@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace CuyZ\ValinorBundle\Tests\Integration;
 
+use CuyZ\ValinorBundle\Tests\App\Objects\BasicObjectWithArrayShape;
+use Symfony\Component\ErrorHandler\DebugClassLoader;
+
 final class MappingTest extends IntegrationTestCase
 {
     public function test_default_mapper_is_injected_and_works_properly(): void
@@ -40,5 +43,18 @@ final class MappingTest extends IntegrationTestCase
             ->map('mixed', 'foo');
 
         self::assertSame('foo', $result);
+    }
+
+    public function test_failing(): void
+    {
+        DebugClassLoader::enable();
+
+        $result = $this->mapperContainer()
+            ->defaultMapper
+            ->map(BasicObjectWithArrayShape::class, [
+                'foo' => [
+                    'basicObject' => null,
+                ]
+            ]);
     }
 }
