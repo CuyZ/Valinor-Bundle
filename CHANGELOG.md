@@ -4,6 +4,22 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.3.0](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.3...0.3.0) (2024-05-27)
+
+### Features
+
+* Add alias for `MapperBuilder` ([23e8c6](https://github.com/CuyZ/Valinor-Bundle/commit/23e8c6800867918034bd85a9d901bf6414d2b43e))
+
+### Bug Fixes
+
+* Solve deprecation message regarding warm-up class ([2d6bba](https://github.com/CuyZ/Valinor-Bundle/commit/2d6bba8538dd47bb569b3b5a2dd10c0f363cb2d8))
+
+### Other
+
+* Drop support for PHP 8.0 ([d631b2](https://github.com/CuyZ/Valinor-Bundle/commit/d631b22bca9d9b66076707234b03815436b89eaa))
+
+---
+
 ## [0.2.3](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.2...0.2.3) (2024-01-13)
 
 ### Bug Fixes
