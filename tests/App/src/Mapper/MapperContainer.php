@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CuyZ\ValinorBundle\Tests\App\Mapper;
 
 use CuyZ\Valinor\Mapper\TreeMapper;
+use CuyZ\Valinor\MapperBuilder;
 use CuyZ\ValinorBundle\Configurator\Attributes\AllowPermissiveTypes;
 use CuyZ\ValinorBundle\Configurator\Attributes\AllowSuperfluousKeys;
 use CuyZ\ValinorBundle\Configurator\Attributes\EnableFlexibleCasting;
@@ -14,6 +15,7 @@ use CuyZ\ValinorBundle\Tests\App\Configurator\DateConfiguratorAttribute;
 final class MapperContainer
 {
     public function __construct(
+        public MapperBuilder $mapperBuilder,
         public TreeMapper $defaultMapper,
         #[EnableFlexibleCasting]
         public TreeMapper $mapperWithFlexibleCasting,

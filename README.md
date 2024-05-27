@@ -99,6 +99,33 @@ services:
 
 </details>
 
+---
+
+For more granular control, a `MapperBuilder` instance can be injected instead.
+
+```php
+use CuyZ\Valinor\Mapper\MapperBuilder;
+
+final class SomeAutowiredService
+{
+    public function __construct(
+        private MapperBuilder $mapperBuilder,
+    ) {}
+    
+    public function someMethod(): void
+    {
+        $this->mapperBuilder
+            // …
+            // Some mapper configuration 
+            // …
+            ->mapper()
+            ->map(SomeDto::class, /* … */);
+        
+        // …
+    }
+}
+````
+
 ## Bundle configuration
 
 Global configuration for the bundle can be done in a package configuration file…

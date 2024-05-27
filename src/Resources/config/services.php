@@ -47,6 +47,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     // @formatter:off
     $container->services()
         ->alias(TreeMapper::class, 'valinor.tree_mapper')
+        ->alias(MapperBuilder::class, 'valinor.mapper_builder')
 
         ->set('valinor.tree_mapper', TreeMapper::class)
             ->factory([service('valinor.mapper_builder'), 'mapper'])
