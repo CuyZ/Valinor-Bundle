@@ -9,6 +9,7 @@ use Psr\SimpleCache\CacheInterface;
 
 use function array_filter;
 use function count;
+use function method_exists;
 
 final class CacheSpy implements CacheInterface
 {
@@ -25,7 +26,19 @@ final class CacheSpy implements CacheInterface
     {
         $definitions = array_filter(
             $this->calls,
-            static fn (mixed $value): bool => $value instanceof ClassDefinition && $value->name() === $className
+            static function (mixed $value) use ($className): bool {
+                if (! $value instanceof ClassDefinition) {
+                    return false;
+                }
+
+                // @phpstan-ignore-next-line
+                if (method_exists($value, 'name')) {
+                    return $value->name() === $className;
+                }
+
+                // @phpstan-ignore-next-line
+                return $value->name === $className;
+            }
         );
 
         return count($definitions) > 0;
