@@ -37,12 +37,6 @@ jobs:
       - name: Warming up cache
         run: php tests/App/bin/console cache:warmup --env=test
 
-      - name: TODO TMP
-        run: |
-          pwd
-          ls -al var/cache/test
-          ls -al var/cache/test/default
-
       - name: Running PHPStan
         run: php vendor/bin/phpstan
 
