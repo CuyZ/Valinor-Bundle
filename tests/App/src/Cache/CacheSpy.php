@@ -36,7 +36,6 @@ final class CacheSpy implements CacheInterface
                     return $value->name() === $className;
                 }
 
-                // @phpstan-ignore-next-line
                 return $value->name === $className;
             }
         );
