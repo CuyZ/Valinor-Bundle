@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.4.0](https://github.com/romm/Valinor-Bundle/compare/0.3.0...0.4.0) (2024-11-21)
+
+### Features
+
+* Add support for PHP 8.4 ([52fe0a](https://github.com/CuyZ/Valinor-Bundle/commit/52fe0a5d14d01a556b4bc6bebbe91bb696e4f15b))
+
+---
+
 ## [0.3.0](https://github.com/CuyZ/Valinor-Bundle/compare/0.2.3...0.3.0) (2024-05-27)
 
 ### Features
