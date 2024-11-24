@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.4.1](https://github.com/CuyZ/Valinor-Bundle/compare/0.4.0...0.4.1) (2024-11-24)
+
+### Bug Fixes
+
+* Explicitly mark service parameter as nullable ([0232d9](https://github.com/CuyZ/Valinor-Bundle/commit/0232d9f5869e018ecd23da351e8daa3debf1fd02))
+
+---
+
 ## [0.4.0](https://github.com/romm/Valinor-Bundle/compare/0.3.0...0.4.0) (2024-11-21)
 
 ### Features
