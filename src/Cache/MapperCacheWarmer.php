@@ -16,7 +16,7 @@ final class MapperCacheWarmer implements CacheWarmerInterface
         private MapperBuilder $mapperBuilder
     ) {}
 
-    public function warmUp(string $cacheDir, string $buildDir = null): array
+    public function warmUp(string $cacheDir, ?string $buildDir = null): array
     {
         $this->mapperBuilder->warmup();
 
