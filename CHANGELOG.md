@@ -4,6 +4,34 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.0](https://github.com/CuyZ/Valinor-Bundle/compare/0.4.1...1.0.0) (2025-05-29)
+
+First stable release 🎉
+
+---
+
+Note that this release also includes a breaking change: the feature that allowed
+attributes to configure a `TreeMapper` directly during the injection has been
+removed.
+
+After some thoughts, this implementation was a bad idea that led to more
+complexity in the bundle code base, for something that should anyway be done
+differently.
+
+There will be no replacement for this feature, and code that used it should
+instead either inject an instance of `MapperBuilder` or use the
+`MapperBuilderConfigurator` interface.
+
+### ⚠ BREAKING CHANGES
+
+* Remove `MapperBuilderConfiguratorAttribute` support ([ddcf2f](https://github.com/CuyZ/Valinor-Bundle/commit/ddcf2fbb74e5b4803fc3c3844c59b3412818b6c2))
+
+### Features
+
+* Register `ArrayNormalizer` and `JsonNormalizer` as services ([dcfd1c](https://github.com/CuyZ/Valinor-Bundle/commit/dcfd1c3339690d3c216eef33c1f64b130bdf75be))
+
+---
+
 ## [0.4.1](https://github.com/CuyZ/Valinor-Bundle/compare/0.4.0...0.4.1) (2024-11-24)
 
 ### Bug Fixes
@@ -12,7 +40,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [0.4.0](https://github.com/romm/Valinor-Bundle/compare/0.3.0...0.4.0) (2024-11-21)
+## [0.4.0](https://github.com/CuyZ/Valinor-Bundle/compare/0.3.0...0.4.0) (2024-11-21)
 
 ### Features
 
