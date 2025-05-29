@@ -26,6 +26,10 @@ Symfony integration of [Valinor library].
 > The mapper can handle native PHP types as well as other advanced types
 > supported by PHPStan and Psalm like shaped arrays, generics, integer range 
 > and more.
+> 
+> The library also provides a normalization mechanism that can help transform
+> any input into a data format (JSON, CSV, …), while preserving the original
+> structure.
 
 ## Installation
 
@@ -125,6 +129,69 @@ final class SomeAutowiredService
     }
 }
 ````
+
+## Normalizer injection
+
+A normalizer instance can be injected in any autowired service in parameters
+with a `Normalizer` type:
+
+- `ArrayNormalizer` — injects a normalizer that transforms values to arrays and
+  scalars.
+- `JsonNormalizer` — injects a normalizer that transforms values to JSON.
+
+```php
+use CuyZ\Valinor\Normalizer\JsonNormalizer;
+
+final class SomeAutowiredService
+{
+    public function __construct(
+        private JsonNormalizer $jsonNormalizer,
+    ) {}
+
+    public function someMethod(): void
+    {
+        // …
+
+        $this->jsonNormalizer->normalize($someObject);
+
+        // …
+    }
+}
+```
+
+It can also be manually injected in a service…
+
+<details>
+<summary>…using a PHP file</summary>
+
+```php
+// config/services.php
+
+use CuyZ\Valinor\Normalizer\JsonNormalizer;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
+return static function (ContainerConfigurator $container): void {
+    $container
+        ->services()
+        ->set(\Acme\SomeService::class)
+        ->args([
+            service(JsonNormalizer::class),
+        ]);
+};
+```
+</details>
+
+<details>
+<summary>…using a YAML file</summary>
+
+```yaml
+services:
+    Acme\SomeService:
+        arguments:
+            - '@CuyZ\Valinor\Normalizer\JsonNormalizer'
+```
+
+</details>
 
 ## Bundle configuration
 

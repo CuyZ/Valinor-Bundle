@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use CuyZ\Valinor\Normalizer\Normalizer;
+use CuyZ\ValinorBundle\Tests\App\Normalizer\NormalizerContainer;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use CuyZ\ValinorBundle\Tests\App\Configurator\ConstructorRegistrationConfigurator;
 use CuyZ\ValinorBundle\Tests\App\Console\FailingMappingCommand;
@@ -17,6 +19,15 @@ return static function (ContainerConfigurator $container): void {
         'test' => true,
         'annotations' => ['enabled' => false],
     ]);
+
+    if (interface_exists(Normalizer::class)) {
+        $container
+            ->services()
+            ->set('app.normalizer_container', NormalizerContainer::class)
+                ->public()
+                ->autowire()
+        ;
+    }
 
     $container
         ->services()

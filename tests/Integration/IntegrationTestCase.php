@@ -6,6 +6,7 @@ namespace CuyZ\ValinorBundle\Tests\Integration;
 
 use CuyZ\ValinorBundle\Tests\App\AppKernel;
 use CuyZ\ValinorBundle\Tests\App\Mapper\MapperContainer;
+use CuyZ\ValinorBundle\Tests\App\Normalizer\NormalizerContainer;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -43,5 +44,10 @@ abstract class IntegrationTestCase extends KernelTestCase
     protected function mapperContainer(): MapperContainer
     {
         return self::getContainer()->get('app.mapper_container');
+    }
+
+    protected function normalizerContainer(): NormalizerContainer
+    {
+        return self::getContainer()->get('app.normalizer_container');
     }
 }

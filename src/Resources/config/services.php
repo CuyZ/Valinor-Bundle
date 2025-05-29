@@ -6,6 +6,10 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use CuyZ\Valinor\Mapper\TreeMapper;
 use CuyZ\Valinor\MapperBuilder;
+use CuyZ\Valinor\Normalizer\ArrayNormalizer;
+use CuyZ\Valinor\Normalizer\Format;
+use CuyZ\Valinor\Normalizer\JsonNormalizer;
+use CuyZ\Valinor\Normalizer\Normalizer;
 use CuyZ\ValinorBundle\Cache\MapperCacheClearer;
 use CuyZ\ValinorBundle\Cache\MapperCacheWarmer;
 use CuyZ\ValinorBundle\Configurator\AllowedExceptionsConfigurator;
@@ -21,6 +25,7 @@ use Throwable;
 
 use function array_map;
 use function in_array;
+use function interface_exists;
 
 return static function (ContainerConfigurator $container, ContainerBuilder $builder): void {
     /**
@@ -45,6 +50,25 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
         ->addTag('valinor.mapper_builder_configurator');
 
     // @formatter:off
+
+    if (interface_exists(Normalizer::class)) {
+        $container->services()
+            ->alias(ArrayNormalizer::class, 'valinor.normalizer.array')
+            ->alias(JsonNormalizer::class, 'valinor.normalizer.json')
+
+            ->set('valinor.normalizer.array', ArrayNormalizer::class)
+                ->factory([service('valinor.mapper_builder'), 'normalizer'])
+                ->args([
+                    inline_service(Format::class)->factory([Format::class, 'array'])
+                ])
+
+            ->set('valinor.normalizer.json', JsonNormalizer::class)
+                ->factory([service('valinor.mapper_builder'), 'normalizer'])
+                ->args([
+                    inline_service(Format::class)->factory([Format::class, 'json'])
+                ]);
+    }
+
     $container->services()
         ->alias(TreeMapper::class, 'valinor.tree_mapper')
         ->alias(MapperBuilder::class, 'valinor.mapper_builder')
