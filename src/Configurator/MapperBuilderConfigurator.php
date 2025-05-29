@@ -26,6 +26,15 @@ use CuyZ\Valinor\MapperBuilder;
  *             ->registerConstructor(SomeOtherDTO::new(...));
  *     }
  * }
+ *
+ * final class DateFormatConfigurator implements MapperBuilderConfigurator
+ * {
+ *     public function configure(MapperBuilder $builder): MapperBuilder
+ *     {
+ *         return $builder
+ *             ->supportDateFormats('Y/m/d', 'Y-m-d H:i:s');
+ *     }
+ * }
  * ```
  *
  * @api
