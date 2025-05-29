@@ -230,93 +230,14 @@ final class ConstructorRegistrationConfigurator implements MapperBuilderConfigur
             ->registerConstructor(SomeOtherDTO::new(...));
     }
 }
-```
 
-### Configuring mapper behaviour with attributes
-
-Attributes can be used to automatically customize the mapper behaviour.
-
-> [!WARNING]
-> This feature is only available for autowired services.
-
-- `EnableFlexibleCasting` — changes several behaviours of the mapper concerning
-  type flexibility. For more information, [read the documentation](https://valinor.cuyz.io/latest/usage/type-strictness-and-flexibility/#enabling-flexible-casting).
-
-- `AllowSuperfluousKeys` — allows superfluous keys in source arrays, preventing
-  errors when a value is not bound to any object property/parameter or shaped
-  array element. For more information, [read the documentation](https://valinor.cuyz.io/latest/usage/type-strictness-and-flexibility/#allowing-superfluous-keys).
-
-- `AllowPermissiveTypes` — allows permissive types `mixed` and `object` to be
-  used during mapping.
-
-- `SupportDateFormats` — configures which date formats will be supported by the
-  mapper.
-
-```php
-use CuyZ\Valinor\Mapper\TreeMapper;
-use CuyZ\ValinorBundle\Configurator\Attributes\AllowPermissiveTypes;
-use CuyZ\ValinorBundle\Configurator\Attributes\AllowSuperfluousKeys;
-use CuyZ\ValinorBundle\Configurator\Attributes\EnableFlexibleCasting;
-use CuyZ\ValinorBundle\Configurator\Attributes\SupportDateFormats;
-
-final class SomeService
-{
-    public function __construct(
-        #[EnableFlexibleCasting]
-        private TreeMapper $mapperWithFlexibleCasting,
-
-        // or…
-        #[AllowSuperfluousKeys]
-        private TreeMapper $mapperWithSuperfluousKeys,
-
-        // or…
-        #[AllowPermissiveTypes]
-        private TreeMapper $mapperWithPermissiveTypes,
-
-        // or…
-        #[SupportDateFormats('Y-m-d', 'Y/m/d')]
-        private TreeMapper $mapperWithCustomDateFormat,
-        
-        // or a combination of the above…
-        #[EnableFlexibleCasting, AllowSuperfluousKeys, …]
-        private TreeMapper $mapperWithSeveralAttributes,
-    ) {}
-}
-```
-
-It is also possible to declare custom configurator attributes by using the
-interface `MapperBuilderConfiguratorAttribute`:
-
-```php
-use Attribute;
-use CuyZ\Valinor\MapperBuilder;
-use CuyZ\ValinorBundle\Configurator\Attributes\MapperBuilderConfiguratorAttribute;
- 
-#[Attribute(Attribute::TARGET_PARAMETER)]
-final class SomeCustomConfigurator implements MapperBuilderConfiguratorAttribute
+final class DateFormatConfigurator implements MapperBuilderConfigurator
 {
     public function configure(MapperBuilder $builder): MapperBuilder
     {
         return $builder
-            ->enableFlexibleCasting()
-            ->allowSuperfluousKeys()
-            ->supportDateFormats('Y/m/d');
+            ->supportDateFormats('Y/m/d', 'Y-m-d H:i:s');
     }
-}
-```
-
-And then it can be used in a service:
-
-```php
-use CuyZ\Valinor\Mapper\TreeMapper;
-use CuyZ\ValinorBundle\Configurator\Attributes\SomeCustomConfigurator;
- 
-final class SomeService
-{
-   public function __construct(
-      #[SomeCustomConfigurator]
-     private TreeMapper $mapperWithCustomConfig
-  ) {}
 }
 ```
 
