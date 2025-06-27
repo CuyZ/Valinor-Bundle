@@ -128,7 +128,7 @@ final class SomeAutowiredService
         // …
     }
 }
-````
+```
 
 ## Normalizer injection
 
@@ -193,6 +193,35 @@ services:
 
 </details>
 
+---
+
+For more granular control, a `NormalizerBuilder` instance can be injected
+instead.
+
+```php
+use CuyZ\Valinor\Normalizer\Format;
+use CuyZ\Valinor\NormalizerBuilder;
+
+final class SomeAutowiredService
+{
+    public function __construct(
+        private NormalizerBuilder $normalizerBuilder,
+    ) {}
+    
+    public function someMethod(): void
+    {
+        $this->normalizerBuilder
+            // …
+            // Some normalizer configuration 
+            // …
+            ->normalizer(Format::array())
+            ->normalize($someValue);
+        
+        // …
+    }
+}
+```
+
 ## Bundle configuration
 
 Global configuration for the bundle can be done in a package configuration file…
@@ -221,8 +250,8 @@ return static function (Symfony\Config\ValinorConfig $config): void {
     // to 0 to disable this feature entirely.
     $config->console()->mappingErrorsToOutput(15);
 
-    // By default, mapper cache entries are stored in the filesystem. This can
-    // be changed by setting the name of a PSR-16 cache service below.
+    // By default, mapper cache entries are stored in the build directory of the
+    // application. This can be changed by setting a custom cache service.
     $config->cache()->service('app.custom_cache');
 
     // Cache entries representing class definitions won't be cleared when files
@@ -261,8 +290,9 @@ valinor:
         mapping_errors_to_output: 15
 
     cache:
-        # By default, mapper cache entries are stored in the filesystem. This
-        # can be changed by setting the name of a PSR-16 cache service below.
+        # By default, mapper cache entries are stored in the build directory of
+        # the application. This can be changed by setting a custom cache
+        # service.
         service: app.custom_cache
 
         # Cache entries representing class definitions won't be cleared when
@@ -290,7 +320,7 @@ use CuyZ\ValinorBundle\Configurator\MapperBuilderConfigurator
 
 final class ConstructorRegistrationConfigurator implements MapperBuilderConfigurator
 {
-    public function configure(MapperBuilder $builder): MapperBuilder
+    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
     {
         return $builder
             ->registerConstructor(SomeDTO::create(...))
@@ -300,10 +330,34 @@ final class ConstructorRegistrationConfigurator implements MapperBuilderConfigur
 
 final class DateFormatConfigurator implements MapperBuilderConfigurator
 {
-    public function configure(MapperBuilder $builder): MapperBuilder
+    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
     {
         return $builder
             ->supportDateFormats('Y/m/d', 'Y-m-d H:i:s');
+    }
+}
+```
+
+### Customizing normalizer builder
+
+A service can customize the normalizer builder by implementing the interface
+`NormalizerBuilderConfigurator`.
+
+> [!NOTE]
+> If this service is autoconfigured, it will automatically be used, otherwise it
+> needs to be tagged with the tag `valinor.normalizer_builder_configurator`.
+
+```php
+use CuyZ\Valinor\NormalizerBuilder;
+use CuyZ\ValinorBundle\Configurator\NormalizerBuilderConfigurator;
+
+final class TransformerRegistrationConfigurator implements NormalizerBuilderConfigurator
+{
+    public function configureNormalizerBuilder(NormalizerBuilder $builder): NormalizerBuilder
+    {
+        return $builder->registerTransformer(
+            fn (string $value): string => strtoupper($value),
+        );
     }
 }
 ```
@@ -365,6 +419,13 @@ final readonly class ClassThatWillBeWarmedUp
 > instantiated by a mapper makes little sense in most cases, it may still be
 > needed, in which case the `$autowire` parameter of the attribute can be set to
 > `true`.
+
+### Cache clearing
+
+When using Symfony's cache clearing feature — usually `bin/console cache:clear`
+— the cache entries will be cleared automatically for all `MapperBuilder` and
+`NormalizerBuilder` that are tagged respectively with `valinor.mapper_builder`
+and `valinor.normalizer_builder`.
 
 [Valinor library]: https://github.com/CuyZ/Valinor
 [link-packagist]: https://packagist.org/packages/cuyz/valinor-bundle

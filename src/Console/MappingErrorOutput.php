@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CuyZ\ValinorBundle\Console;
 
 use CuyZ\Valinor\Mapper\MappingError;
-use CuyZ\Valinor\Mapper\Tree\Message\Messages;
 use CuyZ\Valinor\Mapper\Tree\Message\NodeMessage;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -22,15 +21,14 @@ final class MappingErrorOutput
 
     public function print(MappingError $error): void
     {
-        $node = $error->node();
-        $messages = Messages::flattenFromNode($node)->toArray();
+        $messages = $error->messages()->toArray();
         $count = count($messages);
 
         $this->io->section('Mapping errors');
-        $this->io->writeln("A total of $count errors were found while trying to map to `{$node->type()}`");
+        $this->io->writeln("A total of $count errors were found while trying to map to `{$error->type()}`");
 
         $cells = array_map(
-            fn (NodeMessage $message) => [$message->node()->path(), $message->toString()],
+            fn (NodeMessage $message) => [$message->path(), $message->toString()],
             array_slice($messages, 0, $this->maxEntries)
         );
 

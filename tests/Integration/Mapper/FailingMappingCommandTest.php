@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CuyZ\ValinorBundle\Tests\Integration;
+namespace CuyZ\ValinorBundle\Tests\Integration\Mapper;
 
+use CuyZ\ValinorBundle\Tests\Integration\IntegrationTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;

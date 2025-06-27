@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace CuyZ\ValinorBundle\Tests\Integration;
+namespace CuyZ\ValinorBundle\Tests\Integration\Normalizer;
 
-use CuyZ\Valinor\MapperBuilder;
-use PHPUnit\Framework\Attributes\RequiresMethod;
+use CuyZ\ValinorBundle\Tests\Integration\IntegrationTestCase;
 
-#[RequiresMethod(MapperBuilder::class, 'normalizer')]
 final class NormalizerTest extends IntegrationTestCase
 {
     public function test_can_use_array_normalizer(): void

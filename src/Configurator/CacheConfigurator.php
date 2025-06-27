@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace CuyZ\ValinorBundle\Configurator;
 
+use CuyZ\Valinor\Cache\Cache;
 use CuyZ\Valinor\MapperBuilder;
-use Psr\SimpleCache\CacheInterface;
 
 /** @internal */
 final class CacheConfigurator implements MapperBuilderConfigurator
 {
     public function __construct(
-        private CacheInterface $cache,
+        /** @var Cache<mixed> */
+        private Cache $cache,
     ) {}
 
-    public function configure(MapperBuilder $builder): MapperBuilder
+    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
     {
         return $builder->withCache($this->cache);
     }

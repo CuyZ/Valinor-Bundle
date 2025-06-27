@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace CuyZ\ValinorBundle\DependencyInjection\Factory;
 
+use CuyZ\Valinor\Cache\Cache;
 use CuyZ\Valinor\Cache\FileSystemCache;
 use CuyZ\Valinor\Cache\FileWatchingCache;
-use Psr\SimpleCache\CacheInterface;
 
 /** @internal */
 final class CacheFactory
 {
-    public static function create(string $cacheDir, bool $watchFiles): CacheInterface
+    /**
+     * @return Cache<mixed>
+     */
+    public static function create(string $cacheDir, bool $watchFiles): Cache
     {
         $cache = new FileSystemCache($cacheDir);
 

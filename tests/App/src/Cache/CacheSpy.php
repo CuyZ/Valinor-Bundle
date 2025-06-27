@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace CuyZ\ValinorBundle\Tests\App\Cache;
 
+use CuyZ\Valinor\Cache\Cache;
+use CuyZ\Valinor\Cache\CacheEntry;
 use CuyZ\Valinor\Definition\ClassDefinition;
-use Psr\SimpleCache\CacheInterface;
 
 use function array_filter;
+use function call_user_func;
 use function count;
-use function method_exists;
 
-final class CacheSpy implements CacheInterface
+/**
+ * @implements Cache<mixed>
+ */
+final class CacheSpy implements Cache
 {
     /** @var array<string, mixed> */
     private array $calls = [];
@@ -19,28 +23,30 @@ final class CacheSpy implements CacheInterface
     private bool $wasCleared = false;
 
     public function __construct(
-        private CacheInterface $delegate
+        /** @var Cache<mixed> */
+        private Cache $delegate
     ) {}
 
     public function hasCachedClassDefinition(string $className): bool
     {
         $definitions = array_filter(
             $this->calls,
-            static function (mixed $value) use ($className): bool {
-                if (! $value instanceof ClassDefinition) {
-                    return false;
-                }
-
-                // @phpstan-ignore-next-line
-                if (method_exists($value, 'name')) {
-                    return $value->name() === $className;
-                }
-
-                return $value->name === $className;
-            }
+            fn (mixed $value) => $value instanceof ClassDefinition && $value->name === $className,
         );
 
         return count($definitions) > 0;
+    }
+
+    public function get(string $key, mixed ...$arguments): mixed
+    {
+        return $this->delegate->get($key, ...$arguments);
+    }
+
+    public function set(string $key, CacheEntry $entry): void
+    {
+        $this->calls[$key] = call_user_func(eval('return ' . $entry->code . ';'));
+
+        $this->delegate->set($key, $entry);
     }
 
     public function wasCleared(): bool
@@ -48,50 +54,10 @@ final class CacheSpy implements CacheInterface
         return $this->wasCleared;
     }
 
-    public function get($key, $default = null): mixed
-    {
-        return $this->delegate->get($key, $default);
-    }
-
-    public function set($key, $value, $ttl = null): bool
-    {
-        $this->calls[$key] = $value;
-
-        return $this->delegate->set($key, $value, $ttl);
-    }
-
-    public function delete($key): bool
-    {
-        return $this->delegate->delete($key);
-    }
-
-    public function clear(): bool
+    public function clear(): void
     {
         $this->wasCleared = true;
 
-        return $this->delegate->clear();
-    }
-
-    public function getMultiple($keys, $default = null): iterable
-    {
-        return $this->delegate->getMultiple($keys, $default);
-    }
-
-    /**
-     * @param iterable<mixed> $values
-     */
-    public function setMultiple($values, $ttl = null): bool
-    {
-        return $this->delegate->setMultiple($values, $ttl);
-    }
-
-    public function deleteMultiple($keys): bool
-    {
-        return $this->delegate->deleteMultiple($keys);
-    }
-
-    public function has($key): bool
-    {
-        return $this->delegate->has($key);
+        $this->delegate->clear();
     }
 }

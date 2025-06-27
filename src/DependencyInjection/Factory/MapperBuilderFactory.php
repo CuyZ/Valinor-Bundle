@@ -15,12 +15,12 @@ final class MapperBuilderFactory
         private iterable $globalConfigurators
     ) {}
 
-    public function create(MapperBuilderConfigurator ...$configurators): MapperBuilder
+    public function create(): MapperBuilder
     {
         $builder = new MapperBuilder();
 
-        foreach ([...$this->globalConfigurators, ...$configurators] as $configurator) {
-            $builder = $configurator->configure($builder);
+        foreach ($this->globalConfigurators as $configurator) {
+            $builder = $configurator->configureMapperBuilder($builder);
         }
 
         return $builder;

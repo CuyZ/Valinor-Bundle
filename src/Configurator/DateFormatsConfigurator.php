@@ -14,7 +14,7 @@ final class DateFormatsConfigurator implements MapperBuilderConfigurator
         private array $dateFormatsSupported,
     ) {}
 
-    public function configure(MapperBuilder $builder): MapperBuilder
+    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
     {
         if (count($this->dateFormatsSupported) === 0) {
             return $builder;
