@@ -18,7 +18,7 @@ final class AllowedExceptionsConfigurator implements MapperBuilderConfigurator
         private array $allowedExceptions,
     ) {}
 
-    public function configure(MapperBuilder $builder): MapperBuilder
+    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
     {
         if (count($this->allowedExceptions) === 0) {
             return $builder;

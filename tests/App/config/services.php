@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use CuyZ\Valinor\Normalizer\Normalizer;
+use CuyZ\ValinorBundle\Tests\App\Configurator\TransformerRegistrationConfigurator;
 use CuyZ\ValinorBundle\Tests\App\Normalizer\NormalizerContainer;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use CuyZ\ValinorBundle\Tests\App\Configurator\ConstructorRegistrationConfigurator;
@@ -47,6 +48,9 @@ return static function (ContainerConfigurator $container): void {
             ->autoconfigure()
 
         ->set(ConstructorRegistrationConfigurator::class)
+            ->autoconfigure()
+
+        ->set(TransformerRegistrationConfigurator::class)
             ->autoconfigure()
 
         ->set(ObjectWithWarmupAttribute::class)

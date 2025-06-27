@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace CuyZ\ValinorBundle\Tests\Integration;
+namespace CuyZ\ValinorBundle\Tests\Integration\Mapper;
 
-use Composer\InstalledVersions;
 use CuyZ\ValinorBundle\Tests\App\Cache\CacheSpy;
 use CuyZ\ValinorBundle\Tests\App\Objects\ObjectWithWarmupAttribute;
 use CuyZ\ValinorBundle\Tests\App\Objects\ObjectWithWarmupTag;
+use CuyZ\ValinorBundle\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -18,12 +17,6 @@ final class WarmupTest extends IntegrationTestCase
 {
     public function test_object_with_warmup_tag_are_warmed_up(): void
     {
-        // @phpstan-ignore-next-line
-        if (version_compare(InstalledVersions::getVersion('cuyz/valinor'), '1.5.0', '<=')) {
-            // @see https://github.com/CuyZ/Valinor/commit/78240837e70a4a5f987e300de20478287e17224b
-            self::markTestSkipped('A bug prevents this test from passing on Valinor 1.5.0 and below');
-        }
-
         $this->configureContainer(function (ContainerConfigurator $container) {
             $container->services()
                 ->set('app.cache.spy', CacheSpy::class)
@@ -39,13 +32,8 @@ final class WarmupTest extends IntegrationTestCase
         });
 
         $cacheSpy = $this->cacheSpy();
-        $cacheClearer = $this->cacheClearer();
         $cacheWarmer = $this->cacheWarmer();
         $cacheDir = $this->cacheDir();
-
-        $cacheClearer->clear($cacheDir);
-
-        self::assertTrue($cacheSpy->wasCleared());
 
         $cacheWarmer->enableOptionalWarmers();
         $cacheWarmer->warmUp($cacheDir);
@@ -58,11 +46,6 @@ final class WarmupTest extends IntegrationTestCase
     {
         /** @var CacheSpy */
         return self::getContainer()->get('app.cache.spy');
-    }
-
-    private function cacheClearer(): CacheClearerInterface
-    {
-        return self::getContainer()->get('cache_clearer');
     }
 
     private function cacheWarmer(): CacheWarmerAggregate

@@ -15,11 +15,11 @@ use CuyZ\Valinor\MapperBuilder;
  *
  * ```php
  * use CuyZ\Valinor\MapperBuilder;
- * use CuyZ\ValinorBundle\Configurator\MapperBuilderConfigurator
+ * use CuyZ\ValinorBundle\Configurator\MapperBuilderConfigurator;
  *
  * final class ConstructorRegistrationConfigurator implements MapperBuilderConfigurator
  * {
- *     public function configure(MapperBuilder $builder): MapperBuilder
+ *     public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
  *     {
  *         return $builder
  *             ->registerConstructor(SomeDTO::create(...))
@@ -29,7 +29,7 @@ use CuyZ\Valinor\MapperBuilder;
  *
  * final class DateFormatConfigurator implements MapperBuilderConfigurator
  * {
- *     public function configure(MapperBuilder $builder): MapperBuilder
+ *     public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
  *     {
  *         return $builder
  *             ->supportDateFormats('Y/m/d', 'Y-m-d H:i:s');
@@ -41,5 +41,5 @@ use CuyZ\Valinor\MapperBuilder;
  */
 interface MapperBuilderConfigurator
 {
-    public function configure(MapperBuilder $builder): MapperBuilder;
+    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder;
 }

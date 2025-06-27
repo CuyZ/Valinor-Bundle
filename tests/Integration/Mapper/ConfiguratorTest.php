@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace CuyZ\ValinorBundle\Tests\Integration;
+namespace CuyZ\ValinorBundle\Tests\Integration\Mapper;
 
 use CuyZ\ValinorBundle\Tests\App\Objects\ObjectWithStaticConstructor;
+use CuyZ\ValinorBundle\Tests\Integration\IntegrationTestCase;
 
 final class ConfiguratorTest extends IntegrationTestCase
 {
