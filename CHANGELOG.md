@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [2.0.0](https://github.com/romm/Valinor-Bundle/compare/1.0.0...2.0.0) (2025-06-27)
+
+### ⚠ BREAKING CHANGES
+
+* Make bundle compatible with Valinor 2.0 ([6361a7](https://github.com/romm/Valinor-Bundle/commit/6361a78e84d63c3683fe3c16471a2f906f59a8b9))
+
+---
+
 ## [1.0.0](https://github.com/CuyZ/Valinor-Bundle/compare/0.4.1...1.0.0) (2025-05-29)
 
 First stable release 🎉
