@@ -8,17 +8,15 @@ use CuyZ\Valinor\Cache\Cache;
 use CuyZ\Valinor\Cache\CacheEntry;
 use CuyZ\Valinor\Definition\ClassDefinition;
 
-use function array_filter;
 use function call_user_func;
-use function count;
 
 /**
  * @implements Cache<mixed>
  */
 final class CacheSpy implements Cache
 {
-    /** @var array<string, mixed> */
-    private array $calls = [];
+    /** @var array<string, string> */
+    private array $entries = [];
 
     private bool $wasCleared = false;
 
@@ -29,12 +27,15 @@ final class CacheSpy implements Cache
 
     public function hasCachedClassDefinition(string $className): bool
     {
-        $definitions = array_filter(
-            $this->calls,
-            fn (mixed $value) => $value instanceof ClassDefinition && $value->name === $className,
-        );
+        foreach ($this->entries as $entry) {
+            $result = call_user_func(eval("return $entry;"));
 
-        return count($definitions) > 0;
+            if ($result instanceof ClassDefinition && $result->name === $className) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function get(string $key, mixed ...$arguments): mixed
@@ -44,7 +45,7 @@ final class CacheSpy implements Cache
 
     public function set(string $key, CacheEntry $entry): void
     {
-        $this->calls[$key] = call_user_func(eval('return ' . $entry->code . ';'));
+        $this->entries[$key] = $entry->code;
 
         $this->delegate->set($key, $entry);
     }

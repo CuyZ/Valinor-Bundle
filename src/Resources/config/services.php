@@ -115,6 +115,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
 
         ->set(null, CacheConfigurator::class)
             ->tag('valinor.mapper_builder_configurator')
+            ->tag('valinor.normalizer_builder_configurator')
             ->args([service($config['cache']['service'])])
 
         ->set(null, DateFormatsConfigurator::class)
