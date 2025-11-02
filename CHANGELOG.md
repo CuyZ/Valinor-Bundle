@@ -4,11 +4,23 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
-## [2.0.0](https://github.com/romm/Valinor-Bundle/compare/1.0.0...2.0.0) (2025-06-27)
+## [2.1.0](https://github.com/CuyZ/Valinor-Bundle/compare/2.0.0...2.1.0) (2025-11-02)
+
+### Features
+
+* Add support for PHP 8.5 ([b4808a](https://github.com/CuyZ/Valinor-Bundle/commit/b4808ac18f83949ccc55cf2e4c5713ef4109bd39))
+
+### Bug Fixes
+
+* Automatically register cache for normalizer builder ([583b3f](https://github.com/CuyZ/Valinor-Bundle/commit/583b3fe9878b7b471f43b532497dc388a9551ce7))
+
+---
+
+## [2.0.0](https://github.com/CuyZ/Valinor-Bundle/compare/1.0.0...2.0.0) (2025-06-27)
 
 ### ⚠ BREAKING CHANGES
 
-* Make bundle compatible with Valinor 2.0 ([6361a7](https://github.com/romm/Valinor-Bundle/commit/6361a78e84d63c3683fe3c16471a2f906f59a8b9))
+* Make bundle compatible with Valinor 2.0 ([6361a7](https://github.com/CuyZ/Valinor-Bundle/commit/6361a78e84d63c3683fe3c16471a2f906f59a8b9))
 
 ---
 
