@@ -14,12 +14,19 @@ use CuyZ\ValinorBundle\Tests\App\Mapper\MapperContainer;
 use CuyZ\ValinorBundle\Tests\App\Mapper\TreeMapperDecoratorFromAttribute;
 use CuyZ\ValinorBundle\Tests\App\Objects\ObjectWithWarmupAttribute;
 use Psr\Log\NullLogger;
+use Symfony\Component\HttpKernel\Kernel;
 
 return static function (ContainerConfigurator $container): void {
     $container->extension('framework', [
         'test' => true,
-        'annotations' => ['enabled' => false],
     ]);
+
+    // @phpstan-ignore-next-line Symfony8.0 remove
+    if (Kernel::MAJOR_VERSION < 8) {
+        $container->extension('framework', [
+            'annotations' => ['enabled' => false],
+        ]);
+    }
 
     if (interface_exists(Normalizer::class)) {
         $container
