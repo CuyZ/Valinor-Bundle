@@ -10,6 +10,8 @@ use PHPStan\Node\InClassNode;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 
+use function preg_match;
+use function str_contains;
 use function str_starts_with;
 
 /**
@@ -34,15 +36,19 @@ final class ApiAndInternalAnnotationCheck implements Rule
             return [];
         }
 
-        if (str_starts_with($reflection->getName(), 'CuyZ\ValinorBundle\Tests')) {
+        if (str_contains($reflection->getFileName() ?? '', '/tests/')) {
             return [];
         }
 
-        if (preg_match('/@(api|internal)\s+/', $reflection->getResolvedPhpDoc()?->getPhpDocString() ?? '') !== 1) {
+        if (str_starts_with($reflection->getName(), 'CuyZ\Valinor\QA')) {
+            return [];
+        }
+
+        if (preg_match('/@(api|internal)\s+/', $reflection->getResolvedPhpDoc()?->getPhpDocString() ?? '') === 0) {
             return [
                 RuleErrorBuilder::message(
                     'Missing annotation `@api` or `@internal`.'
-                )->build(),
+                )->identifier('valinor.apiOrInternalAnnotation')->build(),
             ];
         }
 

@@ -28,7 +28,7 @@ final class CacheSpy implements Cache
     public function hasCachedClassDefinition(string $className): bool
     {
         foreach ($this->entries as $entry) {
-            $result = call_user_func(eval("return $entry;"));
+            $result = call_user_func(eval("return $entry;")); // @phpstan-ignore argument.type
 
             if ($result instanceof ClassDefinition && $result->name === $className) {
                 return true;

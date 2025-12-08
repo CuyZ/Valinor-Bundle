@@ -13,10 +13,11 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 final class ValinorExtension extends ConfigurableExtension
 {
     /**
-     * @phpstan-ignore-next-line
+     * @param array<mixed> $mergedConfig
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
+        /** @var array<string, mixed> $mergedConfig */
         $container->prependExtensionConfig('valinor', $mergedConfig);
         $loader = new PhpFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
         $loader->load('services.php');
