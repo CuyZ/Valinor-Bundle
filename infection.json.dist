@@ -1,6 +1,5 @@
 {
     "timeout": 5,
-    "bootstrap": "tests/infection-bootstrap.php",
     "source": {
         "directories": [
             "src"

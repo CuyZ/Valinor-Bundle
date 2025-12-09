@@ -243,6 +243,13 @@ return static function (Symfony\Config\ValinorConfig $config): void {
         \Webmozart\Assert\InvalidArgumentException::class,
         \App\CustomException::class,
     ]);
+    
+    // When enabled, controllers using `#[MapRequest]` can type-hint a PSR-7
+    // `ServerRequestInterface` parameter instead of Symfony's `Request`. The
+    // bundle will automatically handle the conversion.
+    //
+    // Note that this requires the `symfony/psr-http-message-bridge` package.
+    $config->http()->convertRequestToPsr(true);
 
     // When a mapping error occurs during a console command, the output will
     // automatically be enhanced to show information about errors. The maximum
@@ -282,6 +289,14 @@ valinor:
             - \Webmozart\Assert\InvalidArgumentException
             - \App\CustomException,
 
+    http:
+        # When enabled, controllers using `#[MapRequest]` can type-hint a
+        # PSR-7 `ServerRequestInterface` parameter instead of Symfony's
+        # `Request`. The bundle will automatically handle the conversion.
+        #
+        # Note that this requires the `symfony/psr-http-message-bridge` package.
+        convert_request_to_psr: true
+
     console:
         # When a mapping error occurs during a console command, the output will
         # automatically be enhanced to show information about errors. The
@@ -303,6 +318,291 @@ valinor:
 ```
 </details>
 
+## HTTP Request mapping
+
+The bundle provides automatic mapping of HTTP request values to controller
+arguments. This feature leverages Valinor's mapping capabilities to handle route
+parameters, query parameters and request body data.
+
+Lean more about HTTP request mapping [in the library
+documentation](https://valinor-php.dev/latest/how-to/map-http-request/).
+
+Note that Symfony provides a similar built-in solution, which makes use of
+attributes like `#[MapQueryString]` and `#[MapRequestPayload]`. This bundle can
+bring some additional features:
+
+- No need to use attributes unless source enforcement is required.
+- Ability to map advanced types like `non-empty-string`, `positive-int`,
+  `int<10, 100>` and more.
+- Precise error messages when a request contains invalid values.
+- Easy customization of the mapping process using [mapper configurators].
+- And, in the end, any other feature provided by Valinor's mapping system.
+
+### Basic usage
+
+Using the `#[MapRequest]` on a controller's method enables automatic arguments
+mapping from route parameters, query parameters and request body data.
+
+It works out of the box, but when it is needed to enforce a specific source for
+a given parameter, one of the following attributes can be used:
+
+- `#[FromRoute]` for route parameters
+- `#[FromQuery]` for query parameters
+- `#[FromBody]` for request body values
+
+#### Example using attributes
+
+```php
+use CuyZ\ValinorBundle\Http\MapRequest;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[AsController]
+final class ListArticles
+{
+    /**
+     * GET /api/authors/{authorId}/articles?status=X&page=X&limit=X
+     * 
+     * @param positive-int $page
+     * @param int<10, 100> $limit
+     */
+    #[Route('/api/authors/{authorId}/articles', methods: 'GET')]
+    #[MapRequest]
+    public function __invoke(
+        string $authorId,
+        string $status,
+        int $page = 1,
+        int $limit = 10,
+    ): Response { /* … */ }
+}
+```
+
+#### Example using attributes
+
+```php
+use CuyZ\Valinor\Mapper\Http\FromQuery;
+use CuyZ\Valinor\Mapper\Http\FromRoute;
+use CuyZ\ValinorBundle\Http\MapRequest;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[AsController]
+final class ListArticles
+{
+    /**
+     * GET /api/authors/{authorId}/articles?status=X&page=X&limit=X
+     * 
+     * @param positive-int $page
+     * @param int<10, 100> $limit
+     */
+    #[Route('/api/authors/{authorId}/articles', methods: 'GET')]
+    #[MapRequest]
+    public function __invoke(
+        // Can only be mapped from the route
+        #[FromRoute] string $authorId,
+
+        // Can only be mapped from query parameters
+        #[FromQuery] string $status,
+        #[FromQuery] int $page = 1,
+        #[FromQuery] int $limit = 10,
+    ): Response { /* … */ }
+}
+```
+
+### Per-controller mapper configuration
+
+You can customize the mapper behavior for a specific controller by passing
+[mapper configurators] to the `#[MapRequest]` attribute:
+
+```php
+use CuyZ\Valinor\Mapper\Configurator\ConvertKeysToCamelCase;
+use CuyZ\Valinor\Mapper\Http\FromBody;
+use CuyZ\ValinorBundle\Http\MapRequest;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[AsController]
+final class CreateAuthor
+{
+    #[Route('/api/authors/new', methods: 'POST')]
+    #[MapRequest(new ConvertKeysToCamelCase())]
+    public function __invoke(
+        #[FromBody] string $name,
+        #[FromBody] DateTimeInterface $birthDate,
+    ): Response { /* … */ }
+}
+```
+
+APIs often need to define rules concerning the keys cases passed in the request;
+this can be defined using the following configurators:
+
+- [Restricting key case configurators] — restricting keys to `camelCase`, 
+  `PascalCase`, `snake_case` or `kebab-case`.
+- [Converting key case configurators] — automatically converting keys to
+  `camelCase` or `snake_case`.
+
+[Restricting key case configurators]: https://valinor-php.dev/latest/how-to/use-provided-mapper-configurators/#restricting-key-case
+[Converting key case configurators]: https://valinor-php.dev/latest/how-to/use-provided-mapper-configurators/#converting-key-case
+
+### Custom request mapping attribute
+
+When multiple controllers share the same mapper configuration (date formats, key
+case rules, etc.), a custom attribute can be created to avoid repeating the same
+configurators on every controller.
+
+This is done by implementing the `MapRequestAttribute` interface directly:
+
+```php
+use Attribute;
+use CuyZ\Valinor\Mapper\Configurator\ConvertKeysToCamelCase;
+use CuyZ\Valinor\Mapper\Configurator\RestrictKeysToSnakeCase;
+use CuyZ\Valinor\MapperBuilder;
+use CuyZ\ValinorBundle\Http\MapRequestAttribute;
+
+#[Attribute(Attribute::TARGET_METHOD)]
+final class MyAppMapRequest implements MapRequestAttribute
+{
+    public function __construct(
+        /** @var list<non-empty-string> */
+        private array $dateFormats = ['Y-m-d', 'Y-m-d H:i:s'],
+        private bool $allowScalarValueCasting = false,
+    ) {}
+
+    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
+    {
+        // Always restrict keys to `snake_case`
+        $builder = $builder->configureWith(new RestrictKeysToSnakeCase());
+
+        // Always convert keys to `camelCase`
+        $builder = $builder->configureWith(new ConvertKeysToCamelCase());
+
+        $builder = $builder->supportDateFormats(...$this->dateFormats);
+
+        if ($this->allowScalarValueCasting) {
+            $builder = $builder->allowScalarValueCasting();
+        }
+
+        return $builder;
+    }
+}
+```
+
+It can then be used in place of `#[MapRequest]` on any controller method:
+
+```php
+use CuyZ\Valinor\Mapper\Http\FromBody;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[AsController]
+final class CreateComment
+{
+    #[Route('/api/comments', methods: 'POST')]
+    #[MyAppMapRequest(dateFormats: ['d/m/Y'], allowScalarValueCasting: true)]
+    public function __invoke(
+        #[FromBody] string $author,
+        #[FromBody] string $content,
+    ): Response { /* … */ }
+}
+```
+
+### Error handling
+
+When mapping fails, the bundle throws an `HttpRequestMappingError` exception
+with a `422 Unprocessable Entity` status code. The error message includes all
+validation errors. Example:
+
+```
+HTTP request is invalid, a total of 2 error(s) were found:
+- page: value 0 is not a valid positive integer.
+- limit: value 150 is not a valid integer between 10 and 100.
+```
+
+### Mapping all parameters at once
+
+Instead of mapping individual query parameters or body values to separate
+parameters, the `asRoot` option can be used to map all of them at once to a
+single parameter. This is useful when working with complex data structures or
+when the number of parameters is large.
+
+```php
+use CuyZ\Valinor\Mapper\Http\FromQuery;
+use CuyZ\Valinor\Mapper\Http\FromRoute;
+use CuyZ\ValinorBundle\Http\MapRequest;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Attribute\Route;
+
+final readonly class ArticleFilters
+{
+    public function __construct(
+        public string $status,
+        /** @var positive-int */
+        public int $page = 1,
+        /** @var int<10, 100> */
+        public int $limit = 10,
+    ) {}
+}
+
+#[AsController]
+final class ListArticles
+{
+    /**
+     * GET /api/authors/{authorId}/articles?status=X&page=X&limit=X
+     */
+    #[Route('/api/authors/{authorId}/articles', methods: 'GET')]
+    #[MapRequest]
+    public function __invoke(
+        #[FromRoute] string $authorId,
+        #[FromQuery(asRoot: true)] ArticleFilters $filters,
+    ): Response { /* … */ }
+}
+```
+
+The same approach works with `#[FromBody(asRoot: true)]` for body values.
+
+### Request object mapping
+
+When a controller needs to access the original request object, it can be
+directly added as an argument:
+
+```php
+use CuyZ\Valinor\Mapper\Http\FromRoute;
+use CuyZ\ValinorBundle\Http\MapRequest;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[AsController]
+final class ListArticles
+{
+    #[Route('/api/authors/{authorId}/articles', methods: 'GET')]
+    #[MapRequest]
+    public function __invoke(
+        // Request object injected automatically
+        Request $request,
+        
+        #[FromRoute] string $authorId,
+    ): Response {
+        if ($request->headers->has('My-Customer-Header')) {
+            // …
+        }
+    }
+}
+```
+
+> [!NOTE]
+> By enabling the [`valinor.http.convert_request_to_psr` configuration](
+> #bundle-configuration), controllers can type-hint a PSR-7
+> `ServerRequestInterface` parameter instead of Symfony's `Request`. The bundle
+> will automatically convert the incoming Symfony request to a PSR-7 instance.
+> 
+> This requires the `symfony/psr-http-message-bridge` package to be installed.
+
 ## Other features
 
 ### Customizing mapper builder
@@ -319,13 +619,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('valinor.mapper_builder_configurator.default')]
 final class DefaultMapperConfigurator implements MapperBuilderConfigurator
 {
+    public function __construct(
+        /** @var non-empty-list<non-empty-string> */
+        private array $dateFormats,
+    ) {}
+
     public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
     {
-        return $builder
-            ->allowScalarValueCasting()
-            ->registerConstructor(
-                \App\Domain\CustomerId::fromString(...),
-            );
+        return $builder->supportDateFormats(...$this->dateFormats);
     }
 }
 ```
@@ -425,5 +726,6 @@ When using Symfony's cache clearing feature — usually `bin/console cache:clear
 `NormalizerBuilder` that are tagged respectively with `valinor.mapper_builder`
 and `valinor.normalizer_builder`.
 
+[mapper configurators]: https://valinor-php.dev/latest/how-to/use-provided-mapper-configurators/
 [Valinor library]: https://github.com/CuyZ/Valinor
 [link-packagist]: https://packagist.org/packages/cuyz/valinor-bundle

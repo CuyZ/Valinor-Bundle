@@ -16,14 +16,19 @@ use CuyZ\ValinorBundle\Cache\MapperCacheWarmer;
 use CuyZ\ValinorBundle\Configurator\AllowedExceptionsConfigurator;
 use CuyZ\ValinorBundle\Configurator\CacheConfigurator;
 use CuyZ\ValinorBundle\Configurator\DateFormatsConfigurator;
+use CuyZ\ValinorBundle\Configurator\HttpRequestConfigurator;
 use CuyZ\ValinorBundle\Configurator\MapperBuilderConfigurator;
 use CuyZ\ValinorBundle\Configurator\NormalizerBuilderConfigurator;
 use CuyZ\ValinorBundle\Console\ConsoleMappingErrorPrinter;
 use CuyZ\ValinorBundle\DependencyInjection\Factory\CacheFactory;
 use CuyZ\ValinorBundle\DependencyInjection\Factory\MapperBuilderFactory;
 use CuyZ\ValinorBundle\DependencyInjection\Factory\NormalizerBuilderFactory;
+use CuyZ\ValinorBundle\Http\ValinorArgumentResolver;
+use CuyZ\ValinorBundle\Http\ValinorControllerArgumentsMapper;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Throwable;
+use LogicException;
 
 use function array_map;
 use function in_array;
@@ -34,6 +39,9 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
      *     mapper: array{
      *         date_formats_supported: array<scalar>,
      *         allowed_exceptions: array<class-string<Throwable>>,
+     *     },
+     *     http: array{
+     *         convert_request_to_psr: bool,
      *     },
      *     cache: array{
      *         service: string,
@@ -136,6 +144,9 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
             ->tag('valinor.mapper_builder_configurator.default')
             ->args([$config['mapper']['allowed_exceptions']])
 
+        ->set(null, HttpRequestConfigurator::class)
+            ->tag('valinor.mapper_builder_configurator.default')
+
         ->set(null, MapperCacheWarmer::class)
             ->tag('kernel.cache_warmer')
             ->args([
@@ -149,6 +160,17 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
                 tagged_iterator('valinor.mapper_builder'),
                 tagged_iterator('valinor.normalizer_builder'),
             ])
+
+        ->set(null, ValinorControllerArgumentsMapper::class)
+            ->tag('kernel.event_listener')
+            ->args([
+                service('valinor.mapper_builder'),
+                $config['http']['convert_request_to_psr'],
+            ])
+
+        ->set(null, ValinorArgumentResolver::class)
+            ->decorate('argument_resolver')
+            ->args([service('.inner')])
     ;
 
     $mappingErrorsToOutput = $config['console']['mapping_errors_to_output'];
@@ -158,5 +180,9 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
             ->set(null, ConsoleMappingErrorPrinter::class)
             ->tag('kernel.event_listener')
             ->args([$mappingErrorsToOutput]);
+    }
+
+    if ($config['http']['convert_request_to_psr'] === true && ! class_exists(PsrHttpFactory::class)) {
+        throw new LogicException('To use the `valinor.http.convert_request_to_psr` option, you need to install the `symfony/psr-http-message-bridge` package.');
     }
 };
