@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use CuyZ\Valinor\Normalizer\Normalizer;
 use CuyZ\ValinorBundle\Tests\App\Configurator\TransformerRegistrationConfigurator;
 use CuyZ\ValinorBundle\Tests\App\Normalizer\NormalizerContainer;
 use CuyZ\Valinor\Mapper\TreeMapper;
@@ -20,21 +19,17 @@ return static function (ContainerConfigurator $container): void {
         'test' => true,
     ]);
 
-    if (interface_exists(Normalizer::class)) {
-        $container
-            ->services()
-            ->set('app.normalizer_container', NormalizerContainer::class)
-                ->public()
-                ->autowire()
-        ;
-    }
-
+    // @formatter:off
     $container
         ->services()
 
         ->set('logger', NullLogger::class)
 
         ->set('app.mapper_container', MapperContainer::class)
+            ->public()
+            ->autowire()
+
+        ->set('app.normalizer_container', NormalizerContainer::class)
             ->public()
             ->autowire()
 

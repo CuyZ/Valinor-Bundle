@@ -16,3 +16,8 @@ parameters:
     scanDirectories:
         - vendor/symfony/dependency-injection/Loader/Configurator
     tmpDir: var/cache/phpstan
+    ignoreErrors:
+        # Although PHPStan has a quite strong purity inferring mechanism, some
+        # caveats remain and make it really hard to properly add `@pure` markers
+        # all over the codebase. For this reason, we suppress these errors.
+        -   identifier: possiblyImpure.methodCall

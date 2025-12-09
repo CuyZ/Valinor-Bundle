@@ -3,3 +3,4 @@ var
 vendor
 phpstan.neon
 .phpunit.result.cache
+tests/App/config/reference.php

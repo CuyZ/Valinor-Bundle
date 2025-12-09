@@ -7,14 +7,24 @@ namespace CuyZ\ValinorBundle\Tests\Integration;
 use CuyZ\ValinorBundle\Tests\App\AppKernel;
 use CuyZ\ValinorBundle\Tests\App\Mapper\MapperContainer;
 use CuyZ\ValinorBundle\Tests\App\Normalizer\NormalizerContainer;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-abstract class IntegrationTestCase extends KernelTestCase
+abstract class IntegrationTestCase extends WebTestCase
 {
     /** @var array<callable(ContainerConfigurator): void> */
     private static array $configurators = [];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        self::$configurators = [];
+
+        (new Filesystem())->remove([__DIR__ . '/../../var/cache/test/' . AppKernel::testDirectory()]);
+    }
 
     protected static function getKernelClass(): string
     {
