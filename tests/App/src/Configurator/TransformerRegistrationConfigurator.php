@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace CuyZ\ValinorBundle\Tests\App\Configurator;
 
+use CuyZ\Valinor\Normalizer\Configurator\NormalizerBuilderConfigurator;
 use CuyZ\Valinor\NormalizerBuilder;
-use CuyZ\ValinorBundle\Configurator\NormalizerBuilderConfigurator;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
+#[AutoconfigureTag('valinor.normalizer_builder_configurator.default')]
 final class TransformerRegistrationConfigurator implements NormalizerBuilderConfigurator
 {
     public function configureNormalizerBuilder(NormalizerBuilder $builder): NormalizerBuilder

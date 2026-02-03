@@ -34,7 +34,10 @@
     "autoload": {
         "psr-4": {
             "CuyZ\\ValinorBundle\\": "src"
-        }
+        },
+        "files": [
+            "src/Resources/register-missing-interfaces.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

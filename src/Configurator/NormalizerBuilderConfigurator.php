@@ -7,30 +7,43 @@ namespace CuyZ\ValinorBundle\Configurator;
 use CuyZ\Valinor\NormalizerBuilder;
 
 /**
- * This interface can be implemented by services that will configure the
- * normalizer builder.
+ * @deprecated
  *
- * If the service is autoconfigured, it will automatically be used, otherwise it
- * needs to be tagged with the tag `valinor.normalizer_builder_configurator`.
+ * The interface
+ * `\CuyZ\Valinor\Normalizer\Configurator\NormalizerBuilderConfigurator` must
+ * be used instead.
  *
- * ```php
- * use CuyZ\Valinor\NormalizerBuilder;
- * use CuyZ\ValinorBundle\Configurator\NormalizerBuilderConfigurator;
+ *  Configurator implementations will no longer be loaded automatically in the
+ *  next major version. To do so, default configurators must be tagged with the
+ *  tag `valinor.normalizer_builder_configurator.default`.
  *
- * final class TransformerRegistrationConfigurator implements NormalizerBuilderConfigurator
- * {
- *     public function configureNormalizerBuilder(NormalizerBuilder $builder): NormalizerBuilder
- *     {
- *         return $builder->registerTransformer(
- *             fn (string $value): string => strtoupper($value),
- *         );
- *     }
- * }
- * ```
+ *  ```
+ *  use CuyZ\Valinor\Normalizer\Configurator\NormalizerBuilderConfigurator;
+ *  use CuyZ\Valinor\NormalizerBuilder;
+ *  use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+ *
+ *  #[AutoconfigureTag('valinor.normalizer_builder_configurator.default')]
+ *  final class DefaultNormalizerConfigurator implements NormalizerBuilderConfigurator
+ *  {
+ *      public function configureNormalizerBuilder(NormalizerBuilder $builder): NormalizerBuilder
+ *      {
+ *          return $builder
+ *              ->registerTransformer(
+ *                  fn (DateTimeInterface $date) => $date->format('Y-m-d')
+ *              )
+ *              ->registerTransformer(
+ *                  fn (\App\Domain\Money $money) => [
+ *                      'amount' => $money->amount,
+ *                      'currency' => $money->currency->value,
+ *                  ]
+ *              );
+ *      }
+ *  }
+ *  ```
  *
  * @api
  */
-interface NormalizerBuilderConfigurator
+interface NormalizerBuilderConfigurator extends \CuyZ\Valinor\Normalizer\Configurator\NormalizerBuilderConfigurator
 {
     public function configureNormalizerBuilder(NormalizerBuilder $builder): NormalizerBuilder;
 }

@@ -11,7 +11,7 @@ use Throwable;
 use function is_a;
 
 /** @internal */
-final class AllowedExceptionsConfigurator implements MapperBuilderConfigurator
+final class AllowedExceptionsConfigurator implements \CuyZ\Valinor\Mapper\Configurator\MapperBuilderConfigurator
 {
     public function __construct(
         /** @var array<class-string> */

@@ -307,57 +307,55 @@ valinor:
 
 ### Customizing mapper builder
 
-A service can customize the mapper builder by implementing the interface
-`MapperBuilderConfigurator`.
-
-> [!NOTE]
-> If this service is autoconfigured, it will automatically be used, otherwise it
-> needs to be tagged with the tag `valinor.mapper_builder_configurator`.
+Any `MapperBuilderConfigurator` service tagged with
+`valinor.mapper_builder_configurator.default` will be automatically used to
+customize the default mapper builder. 
 
 ```php
+use CuyZ\Valinor\Mapper\Configurator\MapperBuilderConfigurator;
 use CuyZ\Valinor\MapperBuilder;
-use CuyZ\ValinorBundle\Configurator\MapperBuilderConfigurator
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-final class ConstructorRegistrationConfigurator implements MapperBuilderConfigurator
+#[AutoconfigureTag('valinor.mapper_builder_configurator.default')]
+final class DefaultMapperConfigurator implements MapperBuilderConfigurator
 {
     public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
     {
         return $builder
-            ->registerConstructor(SomeDTO::create(...))
-            ->registerConstructor(SomeOtherDTO::new(...));
-    }
-}
-
-final class DateFormatConfigurator implements MapperBuilderConfigurator
-{
-    public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
-    {
-        return $builder
-            ->supportDateFormats('Y/m/d', 'Y-m-d H:i:s');
+            ->allowScalarValueCasting()
+            ->registerConstructor(
+                \App\Domain\CustomerId::fromString(...),
+            );
     }
 }
 ```
 
 ### Customizing normalizer builder
 
-A service can customize the normalizer builder by implementing the interface
-`NormalizerBuilderConfigurator`.
-
-> [!NOTE]
-> If this service is autoconfigured, it will automatically be used, otherwise it
-> needs to be tagged with the tag `valinor.normalizer_builder_configurator`.
+Any `NormalizerBuilderConfigurator` service tagged with
+`valinor.normalizer_builder_configurator.default` will be automatically used to
+customize the default mapper builder.
 
 ```php
+use CuyZ\Valinor\Normalizer\Configurator\NormalizerBuilderConfigurator;
 use CuyZ\Valinor\NormalizerBuilder;
-use CuyZ\ValinorBundle\Configurator\NormalizerBuilderConfigurator;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-final class TransformerRegistrationConfigurator implements NormalizerBuilderConfigurator
+#[AutoconfigureTag('valinor.normalizer_builder_configurator.default')]
+final class DefaultNormalizerConfigurator implements NormalizerBuilderConfigurator
 {
     public function configureNormalizerBuilder(NormalizerBuilder $builder): NormalizerBuilder
     {
-        return $builder->registerTransformer(
-            fn (string $value): string => strtoupper($value),
-        );
+        return $builder
+            ->registerTransformer(
+                fn (DateTimeInterface $date) => $date->format('Y-m-d')
+            )
+            ->registerTransformer(
+                fn (\App\Domain\Money $money) => [
+                    'amount' => $money->amount,
+                    'currency' => $money->currency->value,
+                ]
+            );
     }
 }
 ```
