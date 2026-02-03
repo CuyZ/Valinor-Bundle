@@ -9,7 +9,7 @@ use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\NormalizerBuilder;
 
 /** @internal */
-final class CacheConfigurator implements MapperBuilderConfigurator, NormalizerBuilderConfigurator
+final class CacheConfigurator implements \CuyZ\Valinor\Mapper\Configurator\MapperBuilderConfigurator, \CuyZ\Valinor\Normalizer\Configurator\NormalizerBuilderConfigurator
 {
     public function __construct(
         /** @var Cache<mixed> */

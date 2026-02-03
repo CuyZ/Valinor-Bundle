@@ -46,10 +46,12 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
      */
     $config = $builder->getExtensionConfig('valinor')[0];
 
+    // @deprecated must be removed in 3.0
     $builder
         ->registerForAutoconfiguration(MapperBuilderConfigurator::class)
         ->addTag('valinor.mapper_builder_configurator');
 
+    // @deprecated must be removed in 3.0
     $builder
         ->registerForAutoconfiguration(NormalizerBuilderConfigurator::class)
         ->addTag('valinor.normalizer_builder_configurator');
@@ -75,7 +77,10 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
             ->autoconfigure()
             ->factory([
                 inline_service(MapperBuilderFactory::class)
-                    ->args([tagged_iterator('valinor.mapper_builder_configurator')]),
+                    ->args([
+                        tagged_iterator('valinor.mapper_builder_configurator'),
+                        tagged_iterator('valinor.mapper_builder_configurator.default'),
+                    ]),
                 'create'
             ])
 
@@ -86,7 +91,10 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
             ->autoconfigure()
             ->factory([
                 inline_service(NormalizerBuilderFactory::class)
-                    ->args([tagged_iterator('valinor.normalizer_builder_configurator')]),
+                    ->args([
+                        tagged_iterator('valinor.normalizer_builder_configurator'),
+                        tagged_iterator('valinor.normalizer_builder_configurator.default'),
+                    ]),
                 'create'
             ])
 
@@ -114,18 +122,18 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
             ])
 
         ->set(null, CacheConfigurator::class)
-            ->tag('valinor.mapper_builder_configurator')
-            ->tag('valinor.normalizer_builder_configurator')
+            ->tag('valinor.mapper_builder_configurator.default')
+            ->tag('valinor.normalizer_builder_configurator.default')
             ->args([service($config['cache']['service'])])
 
         ->set(null, DateFormatsConfigurator::class)
-            ->tag('valinor.mapper_builder_configurator')
+            ->tag('valinor.mapper_builder_configurator.default')
             ->args([
                 array_map('strval', $config['mapper']['date_formats_supported'])
             ])
 
         ->set(null, AllowedExceptionsConfigurator::class)
-            ->tag('valinor.mapper_builder_configurator')
+            ->tag('valinor.mapper_builder_configurator.default')
             ->args([$config['mapper']['allowed_exceptions']])
 
         ->set(null, MapperCacheWarmer::class)

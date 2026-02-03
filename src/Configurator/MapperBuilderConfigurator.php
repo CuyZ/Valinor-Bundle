@@ -7,39 +7,37 @@ namespace CuyZ\ValinorBundle\Configurator;
 use CuyZ\Valinor\MapperBuilder;
 
 /**
- * This interface can be implemented by services that will configure the mapper
- * builder.
+ * @deprecated
  *
- * If the service is autoconfigured, it will automatically be used, otherwise it
- * needs to be tagged with the tag `valinor.mapper_builder_configurator`.
+ * The interface `\CuyZ\Valinor\Mapper\Configurator\MapperBuilderConfigurator`
+ * must be used instead.
  *
- * ```php
+ * Configurator implementations will no longer be loaded automatically in the
+ * next major version. To do so, default configurators must be tagged with the
+ * tag `valinor.mapper_builder_configurator.default`.
+ *
+ * ```
+ * use CuyZ\Valinor\Mapper\Configurator\MapperBuilderConfigurator;
  * use CuyZ\Valinor\MapperBuilder;
- * use CuyZ\ValinorBundle\Configurator\MapperBuilderConfigurator;
+ * use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
  *
- * final class ConstructorRegistrationConfigurator implements MapperBuilderConfigurator
+ * #[AutoconfigureTag('valinor.mapper_builder_configurator.default')]
+ * final class DefaultMapperConfigurator implements MapperBuilderConfigurator
  * {
  *     public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
  *     {
  *         return $builder
- *             ->registerConstructor(SomeDTO::create(...))
- *             ->registerConstructor(SomeOtherDTO::new(...));
- *     }
- * }
- *
- * final class DateFormatConfigurator implements MapperBuilderConfigurator
- * {
- *     public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder
- *     {
- *         return $builder
- *             ->supportDateFormats('Y/m/d', 'Y-m-d H:i:s');
+ *             ->allowScalarValueCasting()
+ *             ->registerConstructor(
+ *                 \App\Domain\CustomerId::fromString(...),
+ *             );
  *     }
  * }
  * ```
  *
  * @api
  */
-interface MapperBuilderConfigurator
+interface MapperBuilderConfigurator extends \CuyZ\Valinor\Mapper\Configurator\MapperBuilderConfigurator
 {
     public function configureMapperBuilder(MapperBuilder $builder): MapperBuilder;
 }

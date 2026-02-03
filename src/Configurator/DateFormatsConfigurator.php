@@ -7,7 +7,7 @@ namespace CuyZ\ValinorBundle\Configurator;
 use CuyZ\Valinor\MapperBuilder;
 
 /** @internal */
-final class DateFormatsConfigurator implements MapperBuilderConfigurator
+final class DateFormatsConfigurator implements \CuyZ\Valinor\Mapper\Configurator\MapperBuilderConfigurator
 {
     public function __construct(
         /** @var array<non-empty-string> */
