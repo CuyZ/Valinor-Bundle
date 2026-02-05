@@ -4,6 +4,19 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [2.2.0](https://github.com/CuyZ/Valinor-Bundle/compare/2.1.0...2.2.0) (2026-02-05)
+
+### Features
+
+* Add support for Symfony 8.0 ([2a0849](https://github.com/CuyZ/Valinor-Bundle/commit/2a0849a1ad06a0459e300fd135dc69031dc23bff))
+
+### Other
+
+* Drop support for PHP 8.1 ([89a9f8](https://github.com/CuyZ/Valinor-Bundle/commit/89a9f8bfcc938efab44c74e975452a0c2f70a937))
+* Drop support for Symfony 5.4 ([7ff318](https://github.com/CuyZ/Valinor-Bundle/commit/7ff31853e483555f1b4bc4109a7e259d843947e4))
+
+---
+
 ## [2.1.0](https://github.com/CuyZ/Valinor-Bundle/compare/2.0.0...2.1.0) (2025-11-02)
 
 ### Features
