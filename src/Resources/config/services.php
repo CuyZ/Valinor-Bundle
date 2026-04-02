@@ -147,7 +147,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
         ->set(null, HttpRequestConfigurator::class)
             ->tag('valinor.mapper_builder_configurator.default')
 
-        ->set(null, MapperCacheWarmer::class)
+        ->set('valinor.cache.mapper_cache_warmer', MapperCacheWarmer::class)
             ->tag('kernel.cache_warmer')
             ->args([
                 tagged_locator('valinor.warmup'),

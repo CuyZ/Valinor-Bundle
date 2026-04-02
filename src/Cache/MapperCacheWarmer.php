@@ -12,14 +12,18 @@ use Symfony\Contracts\Service\ServiceProviderInterface;
 final class MapperCacheWarmer implements CacheWarmerInterface
 {
     public function __construct(
-        /** @var ServiceProviderInterface<class-string> */
-        private ServiceProviderInterface $classesToWarmup,
+        /** @var ServiceProviderInterface<class-string>|array<class-string> */
+        private ServiceProviderInterface|array $classesToWarmup,
         private MapperBuilder $mapperBuilder
     ) {}
 
     public function warmUp(string $cacheDir, ?string $buildDir = null): array
     {
-        $this->mapperBuilder->warmupCacheFor(...$this->classesToWarmup->getProvidedServices());
+        if ($this->classesToWarmup instanceof ServiceProviderInterface) {
+            $this->mapperBuilder->warmupCacheFor(...$this->classesToWarmup->getProvidedServices());
+        } else {
+            $this->mapperBuilder->warmupCacheFor(...$this->classesToWarmup);
+        }
 
         return [];
     }

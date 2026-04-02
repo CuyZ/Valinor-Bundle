@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace CuyZ\ValinorBundle;
 
+use CuyZ\ValinorBundle\DependencyInjection\Compiler\CollectClassesPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -11,4 +13,12 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  *
  * @api
  */
-final class ValinorBundle extends Bundle {}
+final class ValinorBundle extends Bundle
+{
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new CollectClassesPass());
+    }
+}

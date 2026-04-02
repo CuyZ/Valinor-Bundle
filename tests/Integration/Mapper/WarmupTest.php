@@ -22,7 +22,8 @@ final class WarmupTest extends IntegrationTestCase
                 ->set('app.cache.spy', CacheSpy::class)
                 ->args([service('valinor.cache.filesystem')])
                 ->set('object_with_warmup_tag', ObjectWithWarmupTag::class)
-                ->tag('valinor.warmup');
+                ->tag('valinor.warmup')
+                ->tag('container.excluded');
 
             $container->extension('valinor', [
                 'cache' => [
