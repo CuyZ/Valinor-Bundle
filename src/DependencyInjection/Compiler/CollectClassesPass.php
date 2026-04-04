@@ -14,6 +14,7 @@ final class CollectClassesPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
+        // Symfony6.4 remove `method_exists` check
         if (!method_exists($container, 'findTaggedResourceIds') || !$container->hasDefinition('valinor.cache.mapper_cache_warmer')) {
             return;
         }

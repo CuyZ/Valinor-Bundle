@@ -10,6 +10,7 @@ use CuyZ\ValinorBundle\Tests\App\Objects\ObjectWithWarmupTag;
 use CuyZ\ValinorBundle\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate;
+use Symfony\Component\HttpKernel\Kernel;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -18,12 +19,16 @@ final class WarmupTest extends IntegrationTestCase
     public function test_object_with_warmup_tag_are_warmed_up(): void
     {
         $this->configureContainer(function (ContainerConfigurator $container) {
-            $container->services()
+            $services = $container->services()
                 ->set('app.cache.spy', CacheSpy::class)
                 ->args([service('valinor.cache.filesystem')])
                 ->set('object_with_warmup_tag', ObjectWithWarmupTag::class)
-                ->tag('valinor.warmup')
-                ->tag('container.excluded');
+                ->tag('valinor.warmup');
+
+            // Symfony6.4 remove tmp variable
+            if (Kernel::MAJOR_VERSION >= 7) {
+                $services->tag('container.excluded');
+            }
 
             $container->extension('valinor', [
                 'cache' => [
