@@ -25,7 +25,7 @@ final class WarmupTest extends IntegrationTestCase
                 ->set('object_with_warmup_tag', ObjectWithWarmupTag::class)
                 ->tag('valinor.warmup');
 
-            // Symfony6.4 remove tmp variable
+            // Symfony6.4 remove tmp variable @phpstan-ignore-next-line
             if (Kernel::MAJOR_VERSION >= 7) {
                 $services->tag('container.excluded');
             }

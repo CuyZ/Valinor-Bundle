@@ -27,6 +27,7 @@ final class ValinorExtension extends ConfigurableExtension
         $loader->load('services.php');
 
         $container->registerAttributeForAutoconfiguration(WarmupForMapper::class, static function (ChildDefinition $definition) {
+            // Symfony6.4 remove `method_exists` check @phpstan-ignore-next-line
             if (method_exists($definition, 'addResourceTag')) {
                 $definition->addResourceTag('valinor.warmup');
             }
