@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [2.3.1](https://github.com/CuyZ/Valinor-Bundle/compare/2.3.0...2.3.1) (2026-11-08)
+
+### Bug Fixes
+
+* Add missing dependency to `symfony/service-contracts` ([0dec66](https://github.com/CuyZ/Valinor-Bundle/commit/0dec6666f25a3bb75e48c75e106580d4f7737a04))
+
+### Other
+
+* Use Symfony resource tags for classes to warmup ([9924ca](https://github.com/CuyZ/Valinor-Bundle/commit/9924cad947e6225d460367f7332d999432bfcc28))
+
+---
+
 ## [2.3.0](https://github.com/CuyZ/Valinor-Bundle/compare/2.2.0...2.3.0) (2026-03-23)
 
 ### Notable changes
